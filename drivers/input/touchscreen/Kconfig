@@ -1337,7 +1337,7 @@ config TOUCHSCREEN_ZINITIX
 
 source "drivers/input/touchscreen/st/Kconfig"
 
-source "drivers/input/touchscreen/stm/Kconfig"
+source "drivers/input/touchscreen/stm/fts1ba90a/Kconfig"
 
 source "drivers/input/touchscreen/focaltech_touch/Kconfig"
 
