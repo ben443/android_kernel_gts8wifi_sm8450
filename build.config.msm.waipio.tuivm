@@ -1,1 +1,13 @@
-../msm-kernel/build.config.msm.waipio.tuivm
+. ${KERNEL_DIR}/build.config.msm.waipio
+
+function apply_tuivm_defconfig() {
+	apply_defconfig_fragment \
+		${KERNEL_DIR}/arch/${ARCH}/configs/vendor/waipio_tuivm.config \
+		vendor/${MSM_ARCH}-gki_defconfig
+	if [ "${TARGET_BUILD_VARIANT}" != "user" ]; then
+		apply_defconfig_fragment \
+			${KERNEL_DIR}/arch/${ARCH}/configs/vendor/waipio_tuivm_debug.config \
+			vendor/${MSM_ARCH}-gki_defconfig
+	fi
+}
+append_cmd PRE_DEFCONFIG_CMDS 'apply_tuivm_defconfig'

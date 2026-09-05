@@ -66,7 +66,6 @@ else
 fi
 
 declare -a fragments=(
-	"${ROOT_DIR}/arch/arm64/configs/vendor/waipio_GKI.config"
 	"${ROOT_DIR}/arch/arm64/configs/vendor/waipio_sec_defconfig"
 	"${ROOT_DIR}/lego.config"
 	"${ROOT_DIR}/arch/arm64/configs/vendor/waipio_nethunter.config"

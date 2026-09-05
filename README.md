@@ -5,6 +5,7 @@
 - Local NetHunter-ready config generation: `./scripts/build-gts8wifi.sh --defconfig-only`
 - Local kernel build: `./scripts/build-gts8wifi.sh --variant user`
 - ACK build wrapper target: `build.config.msm.waipio.nethunter`
+- Restored ACK base targets: `build.config.msm.waipio` and `build.config.msm.waipio.tuivm`
 - GitHub Actions workflow: `.github/workflows/build-gts8wifi.yml`
 
 1. BEST: Make all of your changes to upstream Linux. If appropriate, backport to the stable releases.
