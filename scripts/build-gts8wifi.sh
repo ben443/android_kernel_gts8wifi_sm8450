@@ -49,20 +49,39 @@ if ! command -v aarch64-linux-gnu-gcc >/dev/null 2>&1; then
 	exit 1
 fi
 
+for tool in aarch64-linux-gnu-ar aarch64-linux-gnu-nm aarch64-linux-gnu-objcopy aarch64-linux-gnu-objdump aarch64-linux-gnu-strip; do
+	if ! command -v "${tool}" >/dev/null 2>&1; then
+		echo "${tool} is required" >&2
+		exit 1
+	fi
+done
+
 mkdir -p "${OUT_DIR}"
 
 declare -a make_args=(
 	"O=${OUT_DIR}"
 	"ARCH=arm64"
 	"CC=clang"
+	"HOSTCC=clang"
+	"HOSTCXX=clang++"
 	"CROSS_COMPILE=aarch64-linux-gnu-"
 	"CLANG_TRIPLE=aarch64-linux-gnu-"
+	"AR=aarch64-linux-gnu-ar"
+	"NM=aarch64-linux-gnu-nm"
+	"OBJCOPY=aarch64-linux-gnu-objcopy"
+	"OBJDUMP=aarch64-linux-gnu-objdump"
+	"STRIP=aarch64-linux-gnu-strip"
 )
 
-if command -v ld.lld >/dev/null 2>&1; then
+if command -v llvm-ar >/dev/null 2>&1 \
+	&& command -v llvm-nm >/dev/null 2>&1 \
+	&& command -v llvm-objcopy >/dev/null 2>&1 \
+	&& command -v llvm-objdump >/dev/null 2>&1 \
+	&& command -v llvm-strip >/dev/null 2>&1 \
+	&& command -v ld.lld >/dev/null 2>&1; then
 	make_args+=("LLVM=1" "LLVM_IAS=1")
 else
-	make_args+=("LD=ld.bfd")
+	make_args+=("LD=aarch64-linux-gnu-ld.bfd" "LLVM_IAS=0")
 fi
 
 declare -a fragments=(
