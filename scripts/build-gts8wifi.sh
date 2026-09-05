@@ -7,6 +7,8 @@ OUT_DIR="${OUT_DIR:-${ROOT_DIR}/out/gts8wifi}"
 VARIANT="${TARGET_BUILD_VARIANT:-user}"
 DEFCONFIG_ONLY=0
 TARGETS=()
+CLANG_BIN="${CLANG_BIN:-}"
+LLVM_SUFFIX="${LLVM_SUFFIX:-}"
 
 while (($#)); do
 	case "$1" in
@@ -39,8 +41,17 @@ if [[ "${VARIANT}" != "user" && "${VARIANT}" != "userdebug" && "${VARIANT}" != "
 	exit 1
 fi
 
-if ! command -v clang >/dev/null 2>&1; then
-	echo "clang is required" >&2
+if [[ -z "${CLANG_BIN}" ]]; then
+	if command -v clang-14 >/dev/null 2>&1; then
+		CLANG_BIN=clang-14
+		LLVM_SUFFIX=-14
+	else
+		CLANG_BIN=clang
+	fi
+fi
+
+if ! command -v "${CLANG_BIN}" >/dev/null 2>&1; then
+	echo "${CLANG_BIN} is required" >&2
 	exit 1
 fi
 
@@ -61,9 +72,9 @@ mkdir -p "${OUT_DIR}"
 declare -a make_args=(
 	"O=${OUT_DIR}"
 	"ARCH=arm64"
-	"CC=clang"
-	"HOSTCC=clang"
-	"HOSTCXX=clang++"
+	"CC=${CLANG_BIN}"
+	"HOSTCC=${CLANG_BIN}"
+	"HOSTCXX=${CLANG_BIN/clang/clang++}"
 	"CROSS_COMPILE=aarch64-linux-gnu-"
 	"CLANG_TRIPLE=aarch64-linux-gnu-"
 	"AR=aarch64-linux-gnu-ar"
@@ -73,13 +84,17 @@ declare -a make_args=(
 	"STRIP=aarch64-linux-gnu-strip"
 )
 
-if command -v llvm-ar >/dev/null 2>&1 \
-	&& command -v llvm-nm >/dev/null 2>&1 \
-	&& command -v llvm-objcopy >/dev/null 2>&1 \
-	&& command -v llvm-objdump >/dev/null 2>&1 \
-	&& command -v llvm-strip >/dev/null 2>&1 \
-	&& command -v ld.lld >/dev/null 2>&1; then
-	make_args+=("LLVM=1" "LLVM_IAS=1")
+if command -v "llvm-ar${LLVM_SUFFIX}" >/dev/null 2>&1 \
+	&& command -v "llvm-nm${LLVM_SUFFIX}" >/dev/null 2>&1 \
+	&& command -v "llvm-objcopy${LLVM_SUFFIX}" >/dev/null 2>&1 \
+	&& command -v "llvm-objdump${LLVM_SUFFIX}" >/dev/null 2>&1 \
+	&& command -v "llvm-strip${LLVM_SUFFIX}" >/dev/null 2>&1 \
+	&& command -v "ld.lld${LLVM_SUFFIX}" >/dev/null 2>&1; then
+	llvm_value=1
+	if [[ -n "${LLVM_SUFFIX}" ]]; then
+		llvm_value="${LLVM_SUFFIX}"
+	fi
+	make_args+=("LLVM=${llvm_value}" "LLVM_IAS=1")
 else
 	make_args+=("LD=aarch64-linux-gnu-ld.bfd" "LLVM_IAS=0")
 fi
