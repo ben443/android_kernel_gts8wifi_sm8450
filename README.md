@@ -1,5 +1,12 @@
 # How do I submit patches to Android Common Kernels
 
+## Local gts8wifi build helpers
+
+- Local NetHunter-ready config generation: `./scripts/build-gts8wifi.sh --defconfig-only`
+- Local kernel build: `./scripts/build-gts8wifi.sh --variant user`
+- ACK build wrapper target: `build.config.msm.waipio.nethunter`
+- GitHub Actions workflow: `.github/workflows/build-gts8wifi.yml`
+
 1. BEST: Make all of your changes to upstream Linux. If appropriate, backport to the stable releases.
    These patches will be merged automatically in the corresponding common kernels. If the patch is already
    in upstream Linux, post a backport of the patch that conforms to the patch requirements below.
@@ -147,4 +154,3 @@ a maintainer tree)
 - If the patch is a new feature
     - tag the patch subject with `ANDROID:`
     - add a `Bug:` tag with the Android bug (required for android-specific features)
-

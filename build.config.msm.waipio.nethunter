@@ -1,0 +1,8 @@
+. ${KERNEL_DIR}/build.config.msm.waipio.sec
+
+function apply_nethunter_defconfig() {
+	apply_defconfig_fragment \
+		${KERNEL_DIR}/arch/${ARCH}/configs/vendor/waipio_nethunter.config \
+		vendor/${MSM_ARCH}-gki_defconfig
+}
+append_cmd PRE_DEFCONFIG_CMDS 'apply_nethunter_defconfig'
